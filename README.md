@@ -3,7 +3,7 @@
 A simple **Spring Boot** backend demo for user management.  
 This project demonstrates a basic **three-layer architecture** (Controller / Service / Repository) with typical CRUD RESTful APIs.
 
----
+
 
 ## 📌 Features
 
@@ -13,7 +13,7 @@ This project demonstrates a basic **three-layer architecture** (Controller / Ser
 - Update user information (`PUT /users/{id}`)
 - Delete a user (`DELETE /users/{id}`)
 
----
+
 
 ## 🗂️ Project Structure
 
@@ -26,7 +26,7 @@ src/main/java/com/lujx3419/usersystem
  ├── dto         // Request DTOs
 ```
 
----
+
 
 ## 🚀 How to Run
 
@@ -42,7 +42,7 @@ src/main/java/com/lujx3419/usersystem
    ```
    The server will start at `http://localhost:8080`.
 
----
+
 
 ## 🧩 Learning Points
 
@@ -52,14 +52,14 @@ src/main/java/com/lujx3419/usersystem
 - Basic DTO usage
 - Simulated database using `Map`
 
----
+
 
 ## 🔒 Notes
 
 - This is a simple learning version without a real database.
 - You can upgrade it later to use **Spring Data JPA + MySQL** or another database.
 
----
+
 
 ## ✨ Author
 

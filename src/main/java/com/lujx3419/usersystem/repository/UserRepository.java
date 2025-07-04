@@ -22,6 +22,13 @@ public class UserRepository {
         return user;
     }
 
+    public Optional<User> findByName(String name) {
+        return userDb.values()
+                .stream()
+                .filter(u -> u.getName().equals(name))
+                .findFirst();
+    }
+
     public Optional<User> findById(Long id) {
         return Optional.ofNullable(userDb.get(id));
     }

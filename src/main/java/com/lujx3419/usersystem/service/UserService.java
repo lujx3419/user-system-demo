@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import com.lujx3419.usersystem.common.BusinessException;
@@ -28,7 +29,10 @@ public class UserService {
             throw new BusinessException("用户名已存在！");
         }
 
-        User user = new User(null, name, age);
+        User user = new User();
+        user.setName(name);
+        user.setAge(age);
+        // password 先留空，后面做注册/登录时再用
         return userRepository.save(user);
     }
 
@@ -39,7 +43,8 @@ public class UserService {
         existing.setName(name);
         existing.setAge(age);
 
-        return userRepository.update(id, existing);
+        // 用 save() 来更新，JPA 会根据 id 是否存在决定 insert 还是 update
+        return userRepository.save(existing);
     }
 
     public User getUserById(Long id) {
@@ -50,7 +55,7 @@ public class UserService {
     public void deleteUser(Long id) {
         User existing = userRepository.findById(id)
             .orElseThrow(() -> new BusinessException("用户不存在！"));
-        userRepository.delete(id);
+        userRepository.deleteById(id);
     }
 
     public List<User> getAllUsers() {
@@ -58,12 +63,6 @@ public class UserService {
     }
 
     public List<User> getUsersByPage(int page, int size) {
-        List<User> all = userRepository.findAll();
-        int fromIndex = page * size;
-        int toIndex = Math.min(fromIndex + size, all.size());
-        if (fromIndex > toIndex) {
-            return List.of();
-        }
-        return all.subList(fromIndex, toIndex);
+        return userRepository.findAll(PageRequest.of(page, size)).getContent();
     }
 }

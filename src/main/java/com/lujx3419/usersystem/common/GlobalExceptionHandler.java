@@ -1,5 +1,6 @@
 package com.lujx3419.usersystem.common;
 
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -15,4 +16,12 @@ public class GlobalExceptionHandler {
     public ApiResponse<String> handleOtherException(Exception ex) {
         return ApiResponse.error("Server error: " + ex.getMessage());
     }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ApiResponse<String> handleValidationException(MethodArgumentNotValidException ex) {
+        // 只取第一个错误提示
+        String errorMessage = ex.getBindingResult().getFieldError().getDefaultMessage();
+        return ApiResponse.error(errorMessage);
+    }
+
 }

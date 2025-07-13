@@ -21,12 +21,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User createUser(String name, Integer age) {
-        if (name == null || name.trim().isEmpty()) {
-            throw new BusinessException("用户名不能为空！");
-        }
-        if (age == null || age < 0 || age > 120) {
-            throw new BusinessException("年龄不合法！");
-        }
+        
         Optional<User> exists = userRepository.findByName(name);
         if (exists.isPresent()) {
             throw new BusinessException("用户名已存在！");

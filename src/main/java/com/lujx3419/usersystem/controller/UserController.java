@@ -20,6 +20,8 @@ import com.lujx3419.usersystem.dto.UserResponse;
 import com.lujx3419.usersystem.model.User;
 import com.lujx3419.usersystem.service.UserService;
 
+import jakarta.validation.Valid;
+
 @RestController
 @RequestMapping("/users")
 public class UserController {
@@ -28,13 +30,13 @@ public class UserController {
     private UserService userService;
 
     @PostMapping
-    public ApiResponse<UserResponse> createUser(@RequestBody UserRequest request) {
+    public ApiResponse<UserResponse> createUser(@Valid @RequestBody UserRequest request) {
         User user = userService.createUser(request.getName(), request.getAge());
         return ApiResponse.ok(new UserResponse(user));
     }
 
     @PutMapping("/{id}")
-    public ApiResponse<UserResponse> updateUser(@PathVariable Long id, @RequestBody UserRequest request) {
+    public ApiResponse<UserResponse> updateUser(@PathVariable Long id, @Valid @RequestBody UserRequest request) {
         User user = userService.updateUser(id, request.getName(), request.getAge());
         return ApiResponse.ok(new UserResponse(user));
     }

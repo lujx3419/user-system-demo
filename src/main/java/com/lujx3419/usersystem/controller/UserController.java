@@ -1,7 +1,6 @@
 package com.lujx3419.usersystem.controller;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -17,7 +16,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.lujx3419.usersystem.common.ApiResponse;
 import com.lujx3419.usersystem.dto.UserRequest;
 import com.lujx3419.usersystem.dto.UserResponse;
-import com.lujx3419.usersystem.model.User;
 import com.lujx3419.usersystem.service.UserService;
 
 import jakarta.validation.Valid;
@@ -31,34 +29,32 @@ public class UserController {
 
     @PostMapping
     public ApiResponse<UserResponse> createUser(@Valid @RequestBody UserRequest request) {
-        User user = userService.createUser(request.getName(), request.getAge());
-        return ApiResponse.ok(new UserResponse(user));
+        UserResponse user = userService.createUser(request);
+        return ApiResponse.ok(user);
     }
 
     @PutMapping("/{id}")
     public ApiResponse<UserResponse> updateUser(@PathVariable Long id, @Valid @RequestBody UserRequest request) {
-        User user = userService.updateUser(id, request.getName(), request.getAge());
-        return ApiResponse.ok(new UserResponse(user));
+        UserResponse user = userService.updateUser(id, request);
+        return ApiResponse.ok(user);
     }
 
     @GetMapping("/{id}")
     public ApiResponse<UserResponse> getUser(@PathVariable Long id) {
-        User user = userService.getUserById(id);
-        return ApiResponse.ok(new UserResponse(user));
+        UserResponse user = userService.getUserById(id);
+        return ApiResponse.ok(user);
     }
 
     @GetMapping
     public ApiResponse<List<UserResponse>> getAllUsers() {
-        List<User> users = userService.getAllUsers();
-        List<UserResponse> result = users.stream().map(UserResponse::new).collect(Collectors.toList());
-        return ApiResponse.ok(result);
+        List<UserResponse> users = userService.getAllUsers();
+        return ApiResponse.ok(users);
     }
 
     @GetMapping("/page")
     public ApiResponse<List<UserResponse>> getUsersByPage(@RequestParam int page, @RequestParam int size) {
-        List<User> users = userService.getUsersByPage(page, size);
-        List<UserResponse> result = users.stream().map(UserResponse::new).collect(Collectors.toList());
-        return ApiResponse.ok(result);
+        List<UserResponse> users = userService.getUsersByPage(page, size);
+        return ApiResponse.ok(users);
     }
 
     @DeleteMapping("/{id}")

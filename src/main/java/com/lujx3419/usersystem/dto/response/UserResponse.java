@@ -1,4 +1,4 @@
-package com.lujx3419.usersystem.dto;
+package com.lujx3419.usersystem.dto.response;
 
 import com.lujx3419.usersystem.model.User;
 

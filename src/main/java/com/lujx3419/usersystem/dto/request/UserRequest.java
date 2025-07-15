@@ -1,4 +1,4 @@
-package com.lujx3419.usersystem.dto;
+package com.lujx3419.usersystem.dto.request;
 
 import jakarta.validation.constraints.Max; // 注意要导入这个包
 import jakarta.validation.constraints.Min;

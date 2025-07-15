@@ -14,8 +14,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.lujx3419.usersystem.common.ApiResponse;
-import com.lujx3419.usersystem.dto.UserRequest;
-import com.lujx3419.usersystem.dto.UserResponse;
+import com.lujx3419.usersystem.dto.request.UserLoginRequest;
+import com.lujx3419.usersystem.dto.request.UserRegisterRequest;
+import com.lujx3419.usersystem.dto.request.UserRequest;
+import com.lujx3419.usersystem.dto.response.UserResponse;
 import com.lujx3419.usersystem.service.UserService;
 
 import jakarta.validation.Valid;
@@ -62,4 +64,17 @@ public class UserController {
         userService.deleteUser(id);
         return ApiResponse.ok("用户 ID " + id + " 已删除！");
     }
+
+    @PostMapping("/register")
+    public ApiResponse<UserResponse> registerUser(@Valid @RequestBody UserRegisterRequest request) {
+        UserResponse user = userService.registerUser(request);
+        return ApiResponse.ok(user);
+    }
+
+    @PostMapping("/login")
+    public ApiResponse<UserResponse> login(@Valid @RequestBody UserLoginRequest request) {
+        UserResponse user = userService.login(request);
+        return ApiResponse.ok(user);
+    }
+
 }

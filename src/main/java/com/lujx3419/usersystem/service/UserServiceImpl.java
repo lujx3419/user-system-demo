@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,17 +27,20 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private UserMapper userMapper;
 
+    @Autowired
+    private BCryptPasswordEncoder passwordEncoder;
+
     @Override
     public UserResponse createUser(UserRequest request) {
-
         if (userRepository.findByName(request.getName()).isPresent()) {
             throw new BusinessException("用户名已存在！");
         }
 
         User user = userMapper.toEntity(request);
+        // 加密密码
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
 
         User savedUser = userRepository.save(user);
-
         return userMapper.toResponse(savedUser);
     }
 
@@ -47,6 +51,11 @@ public class UserServiceImpl implements UserService {
 
         existing.setName(request.getName());
         existing.setAge(request.getAge());
+
+        // 如果前端允许更新密码，也可以加上密码加密逻辑
+        if (request.getPassword() != null && !request.getPassword().isEmpty()) {
+            existing.setPassword(passwordEncoder.encode(request.getPassword()));
+        }
 
         User updated = userRepository.save(existing);
         return userMapper.toResponse(updated);
@@ -92,10 +101,9 @@ public class UserServiceImpl implements UserService {
 
         User user = new User();
         user.setName(request.getName());
-        user.setPassword(request.getPassword()); // TODO: Encrypt in real apps
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
 
         User savedUser = userRepository.save(user);
-
         return userMapper.toResponse(savedUser);
     }
 
@@ -104,11 +112,10 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findByName(request.getName())
                 .orElseThrow(() -> new BusinessException("Username does not exist!"));
 
-        if (!user.getPassword().equals(request.getPassword())) {
+        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
             throw new BusinessException("Invalid password!");
         }
 
         return userMapper.toResponse(user);
     }
-
 }

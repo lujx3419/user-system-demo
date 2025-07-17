@@ -6,12 +6,10 @@ public class UserLoginRequest
     @NotBlank(message = "Username cannot be blank")
     private String name;
 
-
     @NotBlank(message = "Password cannot be blank")
     private String password;
 
     // getters and setters
-
     public String getName() {
         return name;
     }

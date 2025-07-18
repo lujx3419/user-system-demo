@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.lujx3419.usersystem.common.BusinessException;
+import com.lujx3419.usersystem.dto.request.ChangePasswordRequest;
 import com.lujx3419.usersystem.dto.request.UserLoginRequest;
 import com.lujx3419.usersystem.dto.request.UserRegisterRequest;
 import com.lujx3419.usersystem.dto.request.UserRequest;
@@ -118,4 +119,19 @@ public class UserServiceImpl implements UserService {
 
         return userMapper.toResponse(user);
     }
+
+    @Override
+    public void changePassword(Long userId, ChangePasswordRequest request) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new BusinessException("用户不存在！"));
+
+        if (!passwordEncoder.matches(request.getOldPassword(), user.getPassword())) {
+            throw new BusinessException("旧密码错误！");
+        }
+
+        String newEncodedPassword = passwordEncoder.encode(request.getNewPassword());
+        user.setPassword(newEncodedPassword);
+        userRepository.save(user);
+    }
+
 }

@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.lujx3419.usersystem.common.ApiResponse;
+import com.lujx3419.usersystem.dto.request.ChangePasswordRequest;
 import com.lujx3419.usersystem.dto.request.UserLoginRequest;
 import com.lujx3419.usersystem.dto.request.UserRegisterRequest;
 import com.lujx3419.usersystem.dto.request.UserRequest;
@@ -75,6 +76,14 @@ public class UserController {
     public ApiResponse<UserResponse> login(@Valid @RequestBody UserLoginRequest request) {
         UserResponse user = userService.login(request);
         return ApiResponse.ok(user);
+    }
+
+    @PutMapping("{id}/password")
+    public ApiResponse<String> changePassword(
+            @PathVariable Long id,
+            @RequestBody ChangePasswordRequest request) {
+        userService.changePassword(id, request);
+        return ApiResponse.ok("密码修改成功！");
     }
 
 }

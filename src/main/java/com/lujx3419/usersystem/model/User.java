@@ -19,6 +19,8 @@ public class User {
     private Integer age;
 
     private String password;  // 提前预留做登录用
+    
+    private String role = "USER";  // 用户角色，默认为USER
 
     // -------------------
     // 必须要有无参构造方法
@@ -56,5 +58,13 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
     }
 }

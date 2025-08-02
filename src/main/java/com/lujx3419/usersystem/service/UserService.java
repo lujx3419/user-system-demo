@@ -12,8 +12,6 @@ import com.lujx3419.usersystem.dto.response.UserResponse;
 
 public interface UserService {
 
-    UserResponse createUser(UserRequest request);
-
     UserResponse updateUser(Long id, UserRequest request);
 
     UserResponse getUserById(Long id);

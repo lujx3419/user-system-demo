@@ -38,19 +38,7 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private JwtUtil jwtUtil;
 
-    @Override
-    public UserResponse createUser(UserRequest request) {
-        if (userRepository.findByName(request.getName()).isPresent()) {
-            throw new BusinessException("Username already exists!");
-        }
 
-        User user = userMapper.toEntity(request);
-        // Encrypt password
-        user.setPassword(passwordEncoder.encode(request.getPassword()));
-
-        User savedUser = userRepository.save(user);
-        return userMapper.toResponse(savedUser);
-    }
 
     @Override
     public UserResponse updateUser(Long id, UserRequest request) {
@@ -136,6 +124,7 @@ public class UserServiceImpl implements UserService {
         User user = new User();
         user.setName(request.getName());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
+        user.setRole("USER"); // Set default role for regular users
 
         User savedUser = userRepository.save(user);
         return userMapper.toResponse(savedUser);

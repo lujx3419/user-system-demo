@@ -35,12 +35,6 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @PostMapping
-    @Operation(summary = "Create User", description = "Create a new user")
-    public ApiResponse<UserResponse> createUser(@Valid @RequestBody UserRequest request) {
-        UserResponse user = userService.createUser(request);
-        return ApiResponse.ok(user);
-    }
 
     @PutMapping("/{id}")
     @Operation(summary = "Update User", description = "Update an existing user")

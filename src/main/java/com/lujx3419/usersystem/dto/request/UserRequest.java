@@ -10,7 +10,7 @@ public class UserRequest {
     @NotNull(message = "Age cannot be null")
     private Integer age;
 
-    @NotBlank(message = "Password cannot be blank")
+   
     private String password;
 
     public String getName() {

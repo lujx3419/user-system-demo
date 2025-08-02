@@ -84,9 +84,7 @@ spring.datasource.password=123456
 
 Or run `UsersystemApplication` directly in your IDE.
 
-### 5. Access API Documentation
 
-Open your browser and visit: `http://localhost:8080/swagger-ui.html`
 
 ---
 
@@ -155,8 +153,7 @@ com.lujx3419.usersystem
  ├── config/                   # Configuration classes
  │   ├── SecurityConfig.java   # BCrypt password encoder
  │   ├── WebSecurityConfig.java # Spring Security configuration
- │   ├── JwtAuthenticationFilter.java # JWT authentication filter
- │   └── OpenApiConfig.java    # Swagger/OpenAPI configuration
+ │   └── JwtAuthenticationFilter.java # JWT authentication filter
  │
  ├── controller/               # REST controllers
  │   └── UserController.java   # User management endpoints

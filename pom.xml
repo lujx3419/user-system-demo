@@ -82,14 +82,6 @@
             <scope>provided</scope>
         </dependency>
 
-                <!-- 让MapStruct和Spring Boot的编译器整合 -->
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <version>1.18.38</version>
-            <scope>provided</scope>
-        </dependency>
-
         <!-- JWT 依赖 -->
         <dependency>
             <groupId>io.jsonwebtoken</groupId>
@@ -109,12 +101,7 @@
             <scope>runtime</scope>
         </dependency>
 
-        <!-- Swagger/OpenAPI 文档 -->
-        <dependency>
-            <groupId>org.springdoc</groupId>
-            <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
-            <version>2.1.0</version>
-        </dependency>
+
     </dependencies>
 
     <build>

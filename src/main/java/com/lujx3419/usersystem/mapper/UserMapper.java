@@ -11,6 +11,8 @@ import org.mapstruct.factory.Mappers;
 public interface UserMapper {
     UserMapper INSTANCE = Mappers.getMapper(UserMapper.class);
 
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "role", ignore = true)
     User toEntity(UserRequest request);
 
     UserResponse toResponse(User user);

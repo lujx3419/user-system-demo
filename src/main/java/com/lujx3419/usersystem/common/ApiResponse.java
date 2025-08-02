@@ -14,20 +14,34 @@ public class ApiResponse<T> {
     }
 
     public static <T> ApiResponse<T> ok(T data) {
-        return new ApiResponse<>(200, "OK", data);
+        return new ApiResponse<>(200, "success", data);
     }
 
     public static <T> ApiResponse<T> error(String message) {
-        return new ApiResponse<>(400, message, null);
+        return new ApiResponse<>(500, message, null);
     }
 
-    // Getter / Setter
-    public int getCode() { return code; }
-    public void setCode(int code) { this.code = code; }
+    public int getCode() {
+        return code;
+    }
 
-    public String getMessage() { return message; }
-    public void setMessage(String message) { this.message = message; }
+    public void setCode(int code) {
+        this.code = code;
+    }
 
-    public T getData() { return data; }
-    public void setData(T data) { this.data = data; }
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public T getData() {
+        return data;
+    }
+
+    public void setData(T data) {
+        this.data = data;
+    }
 }

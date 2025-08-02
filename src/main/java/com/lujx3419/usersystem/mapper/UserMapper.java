@@ -1,16 +1,17 @@
 package com.lujx3419.usersystem.mapper;
 
-import org.mapstruct.Mapper;
-
 import com.lujx3419.usersystem.dto.request.UserRequest;
 import com.lujx3419.usersystem.dto.response.UserResponse;
 import com.lujx3419.usersystem.model.User;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.factory.Mappers;
 
-@Mapper(componentModel = "spring")   
+@Mapper(componentModel = "spring")
 public interface UserMapper {
+    UserMapper INSTANCE = Mappers.getMapper(UserMapper.class);
+
+    User toEntity(UserRequest request);
 
     UserResponse toResponse(User user);
-
-    User toEntity(UserRequest userRequest);
-
 }

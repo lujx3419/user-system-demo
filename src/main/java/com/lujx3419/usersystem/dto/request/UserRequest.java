@@ -1,29 +1,39 @@
 package com.lujx3419.usersystem.dto.request;
 
-import jakarta.validation.constraints.Max; // 注意要导入这个包
-import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 public class UserRequest {
-
-    @NotBlank(message = "用户名不能为空")
+    @NotBlank(message = "Username cannot be blank")
     private String name;
 
-    @NotNull(message = "年龄不能为空")
-    @Min(value = 0, message = "年龄不能小于0")
-    @Max(value = 120, message = "年龄不能大于120")
+    @NotNull(message = "Age cannot be null")
     private Integer age;
 
     @NotBlank(message = "Password cannot be blank")
     private String password;
 
-    public String getName() { return name; }
-    public void setName(String name) { this.name = name; }
+    public String getName() {
+        return name;
+    }
 
-    public Integer getAge() { return age; }
-    public void setAge(Integer age) { this.age = age; }
+    public void setName(String name) {
+        this.name = name;
+    }
 
-    public String getPassword() { return password; }
-    public void setPassword(String password) { this.password = password; }
+    public Integer getAge() {
+        return age;
+    }
+
+    public void setAge(Integer age) {
+        this.age = age;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
 }

@@ -15,17 +15,17 @@ public class OpenApiConfig {
     public OpenAPI customOpenAPI() {
         return new OpenAPI()
                 .info(new Info()
-                        .title("用户管理系统 API")
+                        .title("User Management System API")
                         .version("1.0")
-                        .description("基于Spring Boot的用户管理系统API文档")
+                        .description("User management system API documentation based on Spring Boot")
                         .contact(new Contact()
-                                .name("开发者")
+                                .name("Developer")
                                 .email("developer@example.com")))
                 .components(new Components()
                         .addSecuritySchemes("bearer-jwt", new SecurityScheme()
                                 .type(SecurityScheme.Type.HTTP)
                                 .scheme("bearer")
                                 .bearerFormat("JWT")
-                                .description("JWT认证令牌")));
+                                .description("JWT authentication token")));
     }
 } 

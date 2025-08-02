@@ -1,20 +1,31 @@
 package com.lujx3419.usersystem.dto.response;
 
-import com.lujx3419.usersystem.model.User;
-
 public class UserResponse {
     private Long id;
     private String name;
     private Integer age;
 
-    public UserResponse(User user) {
-        this.id = user.getId();
-        this.name = user.getName();
-        this.age = user.getAge();
+    public Long getId() {
+        return id;
     }
 
-    // Getter
-    public Long getId() { return id; }
-    public String getName() { return name; }
-    public Integer getAge() { return age; }
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Integer getAge() {
+        return age;
+    }
+
+    public void setAge(Integer age) {
+        this.age = age;
+    }
 }

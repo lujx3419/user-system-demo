@@ -41,11 +41,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserResponse createUser(UserRequest request) {
         if (userRepository.findByName(request.getName()).isPresent()) {
-            throw new BusinessException("用户名已存在！");
+            throw new BusinessException("Username already exists!");
         }
 
         User user = userMapper.toEntity(request);
-        // 加密密码
+        // Encrypt password
         user.setPassword(passwordEncoder.encode(request.getPassword()));
 
         User savedUser = userRepository.save(user);
@@ -55,17 +55,17 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserResponse updateUser(Long id, UserRequest request) {
         User existing = userRepository.findById(id)
-                .orElseThrow(() -> new BusinessException("用户不存在！"));
+                .orElseThrow(() -> new BusinessException("User does not exist!"));
 
-        // 权限检查：只能修改自己的信息，或者管理员可以修改任何人的信息
+        // Permission check: only the user themselves or admin can update
         if (!SecurityUtil.canAccessUser(existing.getName())) {
-            throw new BusinessException("没有权限修改此用户信息！");
+            throw new BusinessException("No permission to update this user!");
         }
 
         existing.setName(request.getName());
         existing.setAge(request.getAge());
 
-        // 如果前端允许更新密码，也可以加上密码加密逻辑
+        // If the frontend allows updating the password, also encrypt the password
         if (request.getPassword() != null && !request.getPassword().isEmpty()) {
             existing.setPassword(passwordEncoder.encode(request.getPassword()));
         }
@@ -77,11 +77,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserResponse getUserById(Long id) {
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new BusinessException("用户不存在！"));
+                .orElseThrow(() -> new BusinessException("User does not exist!"));
         
-        // 权限检查：只能查看自己的信息，或者管理员可以查看任何人的信息
+        // Permission check: only the user themselves or admin can view
         if (!SecurityUtil.canAccessUser(user.getName())) {
-            throw new BusinessException("没有权限查看此用户信息！");
+            throw new BusinessException("No permission to view this user!");
         }
         
         return userMapper.toResponse(user);
@@ -90,11 +90,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public void deleteUser(Long id) {
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new BusinessException("用户不存在！"));
+                .orElseThrow(() -> new BusinessException("User does not exist!"));
         
-        // 权限检查：只能删除自己的账户，或者管理员可以删除任何人的账户
+        // Permission check: only the user themselves or admin can delete
         if (!SecurityUtil.canAccessUser(user.getName())) {
-            throw new BusinessException("没有权限删除此用户！");
+            throw new BusinessException("No permission to delete this user!");
         }
         
         userRepository.deleteById(id);
@@ -102,9 +102,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<UserResponse> getAllUsers() {
-        // 权限检查：只有管理员可以查看所有用户列表
+        // Permission check: only admin can view all users
         if (!SecurityUtil.isAdmin()) {
-            throw new BusinessException("只有管理员可以查看所有用户列表！");
+            throw new BusinessException("Only admin can view all users!");
         }
         
         List<User> users = userRepository.findAll();
@@ -115,9 +115,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<UserResponse> getUsersByPage(int page, int size) {
-        // 权限检查：只有管理员可以查看分页用户列表
+        // Permission check: only admin can view paginated user list
         if (!SecurityUtil.isAdmin()) {
-            throw new BusinessException("只有管理员可以查看用户列表！");
+            throw new BusinessException("Only admin can view user list!");
         }
         
         return userRepository.findAll(PageRequest.of(page, size))
@@ -159,10 +159,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public void changePassword(Long userId, ChangePasswordRequest request) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new BusinessException("用户不存在！"));
+                .orElseThrow(() -> new BusinessException("User does not exist!"));
 
         if (!passwordEncoder.matches(request.getOldPassword(), user.getPassword())) {
-            throw new BusinessException("旧密码错误！");
+            throw new BusinessException("Old password is incorrect!");
         }
 
         String newEncodedPassword = passwordEncoder.encode(request.getNewPassword());
@@ -174,20 +174,20 @@ public class UserServiceImpl implements UserService {
     public UserResponse getCurrentUser() {
         String currentUsername = SecurityUtil.getCurrentUsername();
         if (currentUsername == null) {
-            throw new BusinessException("用户未登录！");
+            throw new BusinessException("User not logged in!");
         }
         
         User user = userRepository.findByName(currentUsername)
-                .orElseThrow(() -> new BusinessException("用户不存在！"));
+                .orElseThrow(() -> new BusinessException("User does not exist!"));
         
         return userMapper.toResponse(user);
     }
 
     @Override
     public UserResponse registerAdmin(AdminRegisterRequest request) {
-        // 验证管理员注册码
+        // Validate admin registration code
         if (!"ADMIN123".equals(request.getAdminCode())) {
-            throw new BusinessException("管理员注册码错误！");
+            throw new BusinessException("Admin registration code is incorrect!");
         }
 
         if (userRepository.findByName(request.getName()).isPresent()) {
@@ -197,7 +197,7 @@ public class UserServiceImpl implements UserService {
         User user = new User();
         user.setName(request.getName());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
-        user.setRole("ADMIN"); // 设置为管理员角色
+        user.setRole("ADMIN"); // Set as admin role
 
         User savedUser = userRepository.save(user);
         return userMapper.toResponse(savedUser);
@@ -207,11 +207,11 @@ public class UserServiceImpl implements UserService {
     public LoginResponse refreshToken() {
         String currentUsername = SecurityUtil.getCurrentUsername();
         if (currentUsername == null) {
-            throw new BusinessException("用户未登录！");
+            throw new BusinessException("User not logged in!");
         }
         
         User user = userRepository.findByName(currentUsername)
-                .orElseThrow(() -> new BusinessException("用户不存在！"));
+                .orElseThrow(() -> new BusinessException("User does not exist!"));
         
         String newToken = jwtUtil.generateToken(user.getName());
         UserResponse userResponse = userMapper.toResponse(user);

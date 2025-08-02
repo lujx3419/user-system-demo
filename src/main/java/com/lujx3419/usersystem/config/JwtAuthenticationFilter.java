@@ -29,7 +29,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
 
-        // 对于登录和注册接口，直接放行，不进行JWT验证
+        // For login and registration interfaces, skip JWT validation and allow the request to proceed
         String requestURI = request.getRequestURI();
         if (requestURI.equals("/users/login") || requestURI.equals("/users/register") || requestURI.equals("/users/register/admin")) {
             filterChain.doFilter(request, response);
@@ -46,7 +46,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             try {
                 username = jwtUtil.getUsernameFromToken(jwt);
             } catch (Exception e) {
-                // Token无效，继续执行过滤器链
+                // Invalid token, continue with the filter chain
             }
         }
 

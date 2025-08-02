@@ -18,15 +18,15 @@ public class JwtUtil {
     private static final String SECRET_KEY = "your-secret-key-must-be-at-least-256-bits-long-for-hs256";
     private static final SecretKey key = Keys.hmacShaKeyFor(SECRET_KEY.getBytes());
     
-    // Token有效期：7天
+    // Token validity: 7 days
     private static final long JWT_TOKEN_VALIDITY = 7 * 24 * 60 * 60 * 1000;
 
-    // 从token中获取用户名
+    // Get username from token
     public String getUsernameFromToken(String token) {
         return getClaimFromToken(token, Claims::getSubject);
     }
 
-    // 从token中获取过期时间
+    // Get expiration date from token
     public Date getExpirationDateFromToken(String token) {
         return getClaimFromToken(token, Claims::getExpiration);
     }
@@ -36,7 +36,7 @@ public class JwtUtil {
         return claimsResolver.apply(claims);
     }
 
-    // 从token中获取所有信息
+    // Get all claims from token
     private Claims getAllClaimsFromToken(String token) {
         return Jwts.parserBuilder()
                 .setSigningKey(key)
@@ -45,13 +45,13 @@ public class JwtUtil {
                 .getBody();
     }
 
-    // 检查token是否过期
+    // Check if token is expired
     private Boolean isTokenExpired(String token) {
         final Date expiration = getExpirationDateFromToken(token);
         return expiration.before(new Date());
     }
 
-    // 为用户生成token
+    // Generate token for user
     public String generateToken(String username) {
         Map<String, Object> claims = new HashMap<>();
         return doGenerateToken(claims, username);
@@ -67,7 +67,7 @@ public class JwtUtil {
                 .compact();
     }
 
-    // 验证token
+    // Validate token
     public Boolean validateToken(String token, String username) {
         final String tokenUsername = getUsernameFromToken(token);
         return (username.equals(tokenUsername) && !isTokenExpired(token));

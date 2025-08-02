@@ -7,7 +7,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 public class SecurityUtil {
 
     /**
-     * 获取当前登录用户的用户名
+     * Get the username of the current authenticated user
      */
     public static String getCurrentUsername() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -18,7 +18,7 @@ public class SecurityUtil {
     }
 
     /**
-     * 检查当前用户是否是管理员
+     * Check if the current user is an administrator
      */
     public static boolean isAdmin() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -30,7 +30,7 @@ public class SecurityUtil {
     }
 
     /**
-     * 检查当前用户是否有权限访问指定用户的数据
+     * Check if the current user has permission to access the specified user's data
      */
     public static boolean canAccessUser(String targetUsername) {
         String currentUsername = getCurrentUsername();

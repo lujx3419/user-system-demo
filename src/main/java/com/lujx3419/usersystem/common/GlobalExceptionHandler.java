@@ -7,21 +7,23 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
+    // Handle custom business exceptions
     @ExceptionHandler(BusinessException.class)
     public ApiResponse<String> handleBusinessException(BusinessException ex) {
         return ApiResponse.error(ex.getMessage());
     }
 
-    @ExceptionHandler(Exception.class)
-    public ApiResponse<String> handleOtherException(Exception ex) {
-        return ApiResponse.error("Server error: " + ex.getMessage());
-    }
-
+    // Handle validation exceptions
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ApiResponse<String> handleValidationException(MethodArgumentNotValidException ex) {
-        // 只取第一个错误提示
-        String errorMessage = ex.getBindingResult().getFieldError().getDefaultMessage();
-        return ApiResponse.error(errorMessage);
+        String errorMsg = ex.getBindingResult().getFieldError().getDefaultMessage();
+        return ApiResponse.error(errorMsg);
     }
 
+    // Handle all other exceptions
+    @ExceptionHandler(Exception.class)
+    public ApiResponse<String> handleException(Exception ex) {
+        ex.printStackTrace();
+        return ApiResponse.error("Internal server error");
+    }
 }

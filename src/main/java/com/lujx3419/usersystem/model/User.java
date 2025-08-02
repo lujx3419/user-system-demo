@@ -7,23 +7,23 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "users")  // 表名可以自定义
+@Table(name = "users")  // Table name can be customized
 public class User {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)  // 主键自增
+    @GeneratedValue(strategy = GenerationType.IDENTITY)  // Primary key auto-increment
     private Long id;
 
     private String name;
 
     private Integer age;
 
-    private String password;  // 提前预留做登录用
+    private String password;  // Reserved for login use
     
-    private String role = "USER";  // 用户角色，默认为USER
+    private String role = "USER";  // User role, default is USER
 
     // -------------------
-    // 必须要有无参构造方法
+    // Must have a no-argument constructor
     public User() {}
 
     // Getter / Setter

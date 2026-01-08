@@ -22,6 +22,9 @@ public class WebSecurityConfig {
             .csrf(csrf -> csrf.disable())
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
+                // allow static assets and landing page without authentication
+                .requestMatchers("/", "/index.html", "/static/**", "/css/**", "/js/**", "/images/**", "/favicon.ico").permitAll()
+                // allow public auth endpoints
                 .requestMatchers("/users/register", "/users/register/admin", "/users/login").permitAll()
                 .anyRequest().authenticated()
             )

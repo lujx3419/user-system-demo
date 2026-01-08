@@ -31,10 +31,27 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    @PostMapping("/register")
+    public ApiResponse<UserResponse> registerUser(@Valid @RequestBody UserRegisterRequest request) {
+        UserResponse user = userService.registerUser(request);
+        return ApiResponse.ok(user);
+    }
 
-    @PutMapping("/{id}")
-    public ApiResponse<UserResponse> updateUser(@PathVariable Long id, @Valid @RequestBody UserRequest request) {
-        UserResponse user = userService.updateUser(id, request);
+    @PostMapping("/register/admin")
+    public ApiResponse<UserResponse> registerAdmin(@Valid @RequestBody com.lujx3419.usersystem.dto.request.AdminRegisterRequest request) {
+        UserResponse user = userService.registerAdmin(request);
+        return ApiResponse.ok(user);
+    }
+
+    @PostMapping("/login")
+    public ApiResponse<LoginResponse> login(@Valid @RequestBody UserLoginRequest request) {
+        LoginResponse loginResponse = userService.login(request);
+        return ApiResponse.ok(loginResponse);
+    }
+
+    @GetMapping("/me")
+    public ApiResponse<UserResponse> getCurrentUser() {
+        UserResponse user = userService.getCurrentUser();
         return ApiResponse.ok(user);
     }
 
@@ -56,31 +73,13 @@ public class UserController {
         return ApiResponse.ok(users);
     }
 
-    @DeleteMapping("/{id}")
-    public ApiResponse<String> deleteUser(@PathVariable Long id) {
-        userService.deleteUser(id);
-        return ApiResponse.ok("User ID " + id + " deleted!");
-    }
-
-    @PostMapping("/register")
-    public ApiResponse<UserResponse> registerUser(@Valid @RequestBody UserRegisterRequest request) {
-        UserResponse user = userService.registerUser(request);
+    @PutMapping("/{id}")
+    public ApiResponse<UserResponse> updateUser(@PathVariable Long id, @Valid @RequestBody UserRequest request) {
+        UserResponse user = userService.updateUser(id, request);
         return ApiResponse.ok(user);
     }
 
-    @PostMapping("/register/admin")
-    public ApiResponse<UserResponse> registerAdmin(@Valid @RequestBody com.lujx3419.usersystem.dto.request.AdminRegisterRequest request) {
-        UserResponse user = userService.registerAdmin(request);
-        return ApiResponse.ok(user);
-    }
-
-    @PostMapping("/login")
-    public ApiResponse<LoginResponse> login(@Valid @RequestBody UserLoginRequest request) {
-        LoginResponse loginResponse = userService.login(request);
-        return ApiResponse.ok(loginResponse);
-    }
-
-    @PutMapping("{id}/password")
+    @PutMapping("/{id}/password")
     public ApiResponse<String> changePassword(
             @PathVariable Long id,
             @RequestBody ChangePasswordRequest request) {
@@ -88,10 +87,10 @@ public class UserController {
         return ApiResponse.ok("Password changed successfully!");
     }
 
-    @GetMapping("/me")
-    public ApiResponse<UserResponse> getCurrentUser() {
-        UserResponse user = userService.getCurrentUser();
-        return ApiResponse.ok(user);
+    @DeleteMapping("/{id}")
+    public ApiResponse<String> deleteUser(@PathVariable Long id) {
+        userService.deleteUser(id);
+        return ApiResponse.ok("User ID " + id + " deleted!");
     }
 
     @PostMapping("/refresh-token")

@@ -1,0 +1,198 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>User System Demo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://unpkg.com/modern-css-reset/dist/reset.min.css" rel="stylesheet">
+  <style>
+    :root { color-scheme: light dark; }
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji"; padding: 24px; max-width: 980px; margin: 0 auto; }
+    h1 { font-size: 22px; margin-bottom: 12px; }
+    .card { border: 1px solid #ddd; border-radius: 10px; padding: 16px; margin: 12px 0; }
+    .row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+    label { width: 120px; }
+    input { padding: 8px 10px; border: 1px solid #bbb; border-radius: 8px; min-width: 240px; }
+    button { padding: 8px 12px; border-radius: 8px; border: 1px solid #777; cursor: pointer; }
+    button.primary { background: #2b6cb0; color: #fff; border-color: #2b6cb0; }
+    .stack { display: grid; gap: 10px; }
+    pre { background: #111; color: #0f0; padding: 12px; border-radius: 8px; overflow: auto; max-height: 260px; }
+    .muted { color: #666; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 12px; }
+    .token { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; word-break: break-all; }
+  </style>
+</head>
+<body>
+  <h1>User System Demo</h1>
+  <div class="muted">简单前端页面，用于调用后端 API（注册、登录、查看/更新个人信息、刷新 Token、分页查询）。</div>
+
+  <div class="grid">
+    <div class="card stack">
+      <h3>配置</h3>
+      <div class="row"><label>API Base URL</label><input id="baseUrl" value="" placeholder="默认同域，如 http://localhost:8080" /></div>
+      <div class="row"><label>JWT Token</label><input id="token" placeholder="登录后自动填入" /></div>
+      <div class="row"><button onclick="clearToken()">清除 Token</button></div>
+      <div class="stack"><small class="muted">若前后端同源部署，可留空 Base URL。</small></div>
+    </div>
+
+    <div class="card stack">
+      <h3>注册</h3>
+      <div class="row"><label>用户名</label><input id="regName" /></div>
+      <div class="row"><label>密码</label><input id="regPwd" type="password" /></div>
+      <div class="row"><button class="primary" onclick="register()">注册</button></div>
+    </div>
+
+    <div class="card stack">
+      <h3>管理员注册</h3>
+      <div class="row"><label>用户名</label><input id="aregName" /></div>
+      <div class="row"><label>密码</label><input id="aregPwd" type="password" /></div>
+      <div class="row"><label>Admin Code</label><input id="aregCode" value="ADMIN123" /></div>
+      <div class="row"><button onclick="registerAdmin()">注册管理员</button></div>
+    </div>
+
+    <div class="card stack">
+      <h3>登录</h3>
+      <div class="row"><label>用户名</label><input id="loginName" /></div>
+      <div class="row"><label>密码</label><input id="loginPwd" type="password" /></div>
+      <div class="row"><button class="primary" onclick="login()">登录</button></div>
+      <div class="stack"><div class="token" id="tokenShow"></div></div>
+    </div>
+
+    <div class="card stack">
+      <h3>当前用户信息</h3>
+      <div class="row"><button onclick="getMe()">获取 /users/me</button></div>
+      <div class="row"><button onclick="refreshToken()">刷新 Token</button></div>
+    </div>
+
+    <div class="card stack">
+      <h3>用户操作</h3>
+      <div class="row"><label>用户ID</label><input id="userId" value="1" /></div>
+      <div class="row"><label>用户名</label><input id="updName" /></div>
+      <div class="row"><label>年龄</label><input id="updAge" type="number" min="0" /></div>
+      <div class="row"><label>新密码(可选)</label><input id="updPwd" type="password" /></div>
+      <div class="row"><button onclick="updateUser()">更新</button><button onclick="getUserById()">查询</button><button onclick="deleteUser()">删除</button></div>
+    </div>
+
+    <div class="card stack">
+      <h3>修改密码</h3>
+      <div class="row"><label>用户ID</label><input id="cpUserId" value="1" /></div>
+      <div class="row"><label>旧密码</label><input id="oldPwd" type="password" /></div>
+      <div class="row"><label>新密码</label><input id="newPwd" type="password" /></div>
+      <div class="row"><button onclick="changePassword()">修改密码</button></div>
+    </div>
+
+    <div class="card stack">
+      <h3>分页查询（ADMIN）</h3>
+      <div class="row"><label>页码</label><input id="page" type="number" value="0" /></div>
+      <div class="row"><label>大小</label><input id="size" type="number" value="5" /></div>
+      <div class="row"><button onclick="getUsersByPage()">查询</button><button onclick="getAllUsers()">全部</button></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>响应</h3>
+    <pre id="out">Ready.</pre>
+  </div>
+
+  <script>
+    const $ = (id) => document.getElementById(id);
+    const out = $("out");
+
+    function base() {
+      const b = $("baseUrl").value.trim();
+      return b || "";
+    }
+
+    function setToken(t) {
+      $("token").value = t || "";
+      $("tokenShow").textContent = t ? `Bearer ${t}` : "";
+    }
+
+    function clearToken() { setToken(""); log({ message: "Token cleared" }); }
+
+    function log(obj) {
+      out.textContent = (typeof obj === 'string') ? obj : JSON.stringify(obj, null, 2);
+    }
+
+    async function req(path, options = {}) {
+      const headers = { 'Content-Type': 'application/json', ...(options.headers || {}) };
+      const token = $("token").value.trim();
+      if (token) headers['Authorization'] = `Bearer ${token}`;
+      const res = await fetch(`${base()}${path}`, { ...options, headers });
+      const text = await res.text();
+      let data = text;
+      try { data = JSON.parse(text); } catch (_) {}
+      log({ status: res.status, data });
+      return { res, data };
+    }
+
+    async function register() {
+      const name = $("regName").value.trim();
+      const password = $("regPwd").value;
+      await req('/users/register', { method: 'POST', body: JSON.stringify({ name, password }) });
+    }
+
+    async function registerAdmin() {
+      const name = $("aregName").value.trim();
+      const password = $("aregPwd").value;
+      const adminCode = $("aregCode").value;
+      await req('/users/register/admin', { method: 'POST', body: JSON.stringify({ name, password, adminCode }) });
+    }
+
+    async function login() {
+      const name = $("loginName").value.trim();
+      const password = $("loginPwd").value;
+      const { data } = await req('/users/login', { method: 'POST', body: JSON.stringify({ name, password }) });
+      if (data && data.data && data.data.token) setToken(data.data.token);
+    }
+
+    async function getMe() { await req('/users/me'); }
+    async function refreshToken() {
+      const { data } = await req('/users/refresh-token', { method: 'POST' });
+      if (data && data.data && data.data.token) setToken(data.data.token);
+    }
+
+    async function getUserById() {
+      const id = $("userId").value;
+      await req(`/users/${id}`);
+    }
+
+    async function updateUser() {
+      const id = $("userId").value;
+      const name = $("updName").value.trim();
+      const age = $("updAge").value ? Number($("updAge").value) : null;
+      const password = $("updPwd").value.trim() || null;
+      await req(`/users/${id}`, { method: 'PUT', body: JSON.stringify({ name, age, password }) });
+    }
+
+    async function deleteUser() {
+      const id = $("userId").value;
+      await req(`/users/${id}`, { method: 'DELETE' });
+    }
+
+    async function changePassword() {
+      const id = $("cpUserId").value;
+      const oldPassword = $("oldPwd").value;
+      const newPassword = $("newPwd").value;
+      await req(`/users/${id}/password`, { method: 'PUT', body: JSON.stringify({ oldPassword, newPassword }) });
+    }
+
+    async function getUsersByPage() {
+      const page = Number($("page").value || 0);
+      const size = Number($("size").value || 5);
+      await req(`/users/page?page=${page}&size=${size}`);
+    }
+
+    async function getAllUsers() { await req('/users'); }
+
+    // try to read token from url hash: #token=xxx
+    (function init() {
+      const m = location.hash.match(/token=([^&]+)/);
+      if (m) setToken(decodeURIComponent(m[1]));
+    })();
+  </script>
+</body>
+</html>
+
+
